@@ -19,4 +19,4 @@
 # 使用方法和运作原理
 点击标题左侧链接标志查看流程图
 
-![doubao_writer](https://github.com/user-attachments/assets/a4139bd5-7e82-4493-a78d-0d5c7c8856fb)
+![doubao_writer](https://github.com/user-attachments/assets/60769a64-4a5e-4045-b751-ff95f45b3cde)
