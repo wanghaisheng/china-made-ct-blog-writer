@@ -175,8 +175,12 @@ def getdetail(link):
     tab.close()
     return result
 
-def save_data(data, output_format, filename,result_folder='result'):
+def save_data(data, output_format, filename,result_folder='result',keyword=''):
     os.makedirs(result_folder, exist_ok=True)
+    
+    if keyword:
+        filename = f"{keyword}_{filename}"
+
     full_filename = os.path.join(result_folder, filename)
 
     if output_format == 'csv':
@@ -190,7 +194,9 @@ def save_data(data, output_format, filename,result_folder='result'):
     else:
         print("Invalid output format. Supported formats are 'csv' and 'json'.")
 
-def load_historical_links(filename='archive.csv',result_folder='result'):
+def load_historical_links(filename='archive.csv',result_folder='result',keyword=''):
+    if keyword:
+        filename = f"{keyword}_{filename}"
     full_filename = os.path.join(result_folder, filename)
     try:
         df = pd.read_csv(full_filename)
@@ -203,10 +209,12 @@ def load_historical_links(filename='archive.csv',result_folder='result'):
         print(f"Error loading historical links: {e}")
         return set()
 
-def save_historical_links(new_links, filename='archive.csv',result_folder='result'):
+def save_historical_links(new_links, filename='archive.csv',result_folder='result',keyword=''):
+    if keyword:
+        filename = f"{keyword}_{filename}"
     full_filename = os.path.join(result_folder, filename)
     try:
-        existing_links=load_historical_links(filename,result_folder)
+        existing_links=load_historical_links(filename,result_folder,keyword)
         
         new_df = pd.DataFrame(new_links)
         
@@ -259,26 +267,23 @@ if __name__ == "__main__":
     if args.result_folder:
         result_folder = args.result_folder
         
-    all_links = []
     for k in keywords:
-        all_links.extend(getlinks(k))
-    
-    print(f"Found {len(all_links)} links.")
-    
-    historical_links = load_historical_links(result_folder=result_folder)
-    new_links = [item for item in all_links if item['url'] not in historical_links]
-    print(f"Found {len(new_links)} new links.")
-    
-    results = []
-    for item in new_links:
-      
-        detail = getdetail(item['url'])
-        item.update(detail)
-        results.append(item)
-    
-    save_historical_links(all_links,result_folder=result_folder)
-    save_data(results, output_format, output_filename + '.' + output_format,result_folder=result_folder)
-    if results:
-        save_data(results,output_format,f"{output_filename}_latest.{output_format}",result_folder=result_folder)
+        all_links = getlinks(k)
+        print(f"Found {len(all_links)} links for keyword: {k}")
+        
+        historical_links = load_historical_links(result_folder=result_folder,keyword=k)
+        new_links = [item for item in all_links if item['url'] not in historical_links]
+        print(f"Found {len(new_links)} new links for keyword: {k}")
+        
+        results = []
+        for item in new_links:
+            detail = getdetail(item['url'])
+            item.update(detail)
+            results.append(item)
+        
+        save_historical_links(all_links,result_folder=result_folder,keyword=k)
+        save_data(results, output_format, output_filename + '.' + output_format,result_folder=result_folder,keyword=k)
+        if results:
+            save_data(results,output_format,f"{output_filename}_latest.{output_format}",result_folder=result_folder,keyword=k)
 
     browser.quit()
