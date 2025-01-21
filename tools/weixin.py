@@ -21,16 +21,21 @@ def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',
     tab = browser.new_tab()
     tab.get(baseurl)
     #输入关键词
+    print('输入关键词')
     
     tab.eles('t:table')[0].ele('t:tbody').children()[1].clear().input(k)
     setting=tab.eles('t:table')[1].ele('t:tbody').children()
     # 每页结果数量
+    print('设置每页数量')
+    
     select=setting[0].ele('t:select')
     option = select('t:option')
     if perpageresult not in ["10","20","50"]:
         perpageresult="50"
     select.select.by_value(perpageresult)
     #最近几天的结果
+    print('设置时间')
+    
     select=setting[1].ele('t:select')
     option = select('t:option')
     if timeframe not in ['0days',"1days","7days","30days",'360days']:
@@ -59,12 +64,15 @@ def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',
     if position=='url':
         checkbox[2].click()
     # 网站内查询
+    print('输入搜索的目标网站')
+    
     if site:
         setting[-1].ele('t:input').input(site)
     
 
     
     tab=tab.ele('@value=百度一下').click.for_new_tab()
+    print('提交结果 ',tab.url)
     all_items = []
     page_num = 1
     while True:
@@ -102,34 +110,6 @@ def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',
 
     tab.close()
     return all_items
-
-
-def getdetail(link):
-    tab = browser.new_tab()
-    tab.get(link)
-    time.sleep(2)
-
-    try:
-        img = tab.ele('.rich_media_content').ele("t:img").link
-    except:
-        img = ''
-    try:
-        content = tab.ele('.rich_media_content').text
-    except:
-        content = ''
-    try:
-        name = tab.ele('#activity-name').text.replace("《", '').replace("》", '')
-    except:
-        name = ''
-    result = {
-        "link": link,
-        "img": img,
-        "name": name,
-        "content": content
-    }
-    tab.close()
-    return result
-
 
 def save_data(data, output_format, filename, result_folder='result', keyword=''):
     os.makedirs(result_folder, exist_ok=True)
@@ -171,6 +151,7 @@ def save_historical_links(new_links, filename='archive.csv', result_folder='resu
     if keyword:
         filename = f"{keyword}_{filename}"
     full_filename = os.path.join(result_folder, filename)
+    os.mkdirs(result_folder,exist)
     try:
         existing_links = load_historical_links(filename, result_folder, keyword)
 
@@ -233,16 +214,9 @@ if __name__ == "__main__":
         new_links = [item for item in all_links if item['url'] not in historical_links]
         print(f"Found {len(new_links)} new links for keyword: {k}")
 
-        results = []
-        for item in new_links:
-            detail = getdetail(item['url'])
-            item.update(detail)
-            results.append(item)
-
-        save_historical_links(all_links, result_folder=result_folder, keyword=k)
-        save_data(results, output_format, output_filename + '.' + output_format, result_folder=result_folder, keyword=k)
-        if results:
-            save_data(results, output_format, f"{output_filename}_latest.{output_format}", result_folder=result_folder,
-                      keyword=k)
+        if len(all_links)>0:
+            save_historical_links(historical_links.extends(all_links), result_folder=result_folder, keyword=k)
+        if len(new_links)>0:
+            save_historical_links(new_links,filename='latest.csv', result_folder=result_folder, keyword=k)
 
     browser.quit()
