@@ -1,0 +1,28 @@
+name: Process URLs from File
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_path:
+        description: 'Path to the file containing WeChat article URLs'
+        required: true
+        type: string
+
+jobs:
+  process_urls:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run the Script
+        run: node process_urls.js "${{ github.event.inputs.file_path }}"
