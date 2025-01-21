@@ -53,11 +53,11 @@ def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',
     if position not in ['all',"title","url"]:
         position="all"
     if position=='all':
-        checbox[0].click()
+        checkbox[0].click()
     if position=='title':
-        checbox[1].click()
+        checkbox[1].click()
     if position=='url':
-        checbox[2].click()
+        checkbox[2].click()
     # 网站内查询
     if site:
         setting[-1].ele('t:input').input(site)
