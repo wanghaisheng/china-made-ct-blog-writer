@@ -64,7 +64,7 @@ def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',
     
 
     
-    tab=tab.ele('@value=百度一下').for_new_tab()
+    tab=tab.ele('@value=百度一下').click.for_new_tab()
     all_items = []
     page_num = 1
     while True:
