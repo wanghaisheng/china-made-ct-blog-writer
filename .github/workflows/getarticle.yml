@@ -44,7 +44,7 @@ jobs:
 
         
       - name: Run the scraping script
-        run: python weixin.py
+        run: python toos/weixin.py
         env:
           domain: ${{ github.event.inputs.domain }}          
           count: ${{ github.event.inputs.count }}          
