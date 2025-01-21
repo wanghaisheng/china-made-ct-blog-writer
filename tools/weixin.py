@@ -22,8 +22,8 @@ def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',
     tab.get(baseurl)
     #输入关键词
     
-    tab.eles('t:table')[1].ele('t:tbody').children()[1].clear().input(k)
-    setting=tab.eles('t:table')[2].ele('t:tbody').children()
+    tab.eles('t:table')[0].ele('t:tbody').children()[1].clear().input(k)
+    setting=tab.eles('t:table')[1].ele('t:tbody').children()
     # 每页结果数量
     select=setting[0].ele('t:select')
     option = select('t:option')
