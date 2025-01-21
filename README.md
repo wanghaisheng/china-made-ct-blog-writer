@@ -1,4 +1,10 @@
-# 豆包文章生成工具 ai_writer
+# 文章生成工具 ai_writer
+
+
+## blog
+
+## post
+
 
 # 一、项目适用场景
 大批量有相同格式且要求不高的文字材料生成（例如自媒体文案创作）
@@ -20,3 +26,9 @@
 点击标题左侧链接标志查看流程图
 
 ![doubao_writer](https://github.com/user-attachments/assets/60769a64-4a5e-4045-b751-ff95f45b3cde)
+
+
+
+Reference
+
+https://github.com/ericyangpan/wechat2markdown/tree/main
