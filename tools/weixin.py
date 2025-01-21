@@ -13,7 +13,7 @@ from getbrowser import setup_chrome  # Import your setup_chrome
 browser = setup_chrome()
 
 
-def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',format='all'):
+def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',format=None):
     urls = []
     baseurl = 'https://www.baidu.com/gaoji/advanced.html'
     # search_url = f"https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=baiduadv&wd={urllib.parse.quote(k)}%20site%3A{site}&oq={urllib.parse.quote(k)}%20site%3A{site}&rsv_pq=e88db4ce00cd887e&rsv_t=256b4D2yo2fBNTqKe7E3IhSD4s4sO14u68eLuvCndtsP00QR1%2Br2andmZKJ69F0&rqlang=cn&rsv_enter=1&rsv_dl=tb&gpc=stf%3D1736852798%2C1737457598%7Cstftype%3D1&tfflag=1&si={site}&ct=2097152"
@@ -40,9 +40,13 @@ def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',
     #文档格式	pdf word
     select=setting[3].ele('t:select')
     option = select('t:option')
-    if format not in ['all',"pdf","doc","xls",'ppt','rtf']:
-        format="all"
-    select.select.by_value(format)
+    if format is None :
+        pass
+        
+    else
+        if format not in ['all',"pdf","doc","xls",'ppt','rtf']:
+            format="all"
+        select.select.by_value(format)
 
     #关键词出现位置
     checkbox=setting[4].eles('t:input')
