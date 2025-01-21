@@ -43,7 +43,7 @@ def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',
     if format is None :
         pass
         
-    else
+    else:
         if format not in ['all',"pdf","doc","xls",'ppt','rtf']:
             format="all"
         select.select.by_value(format)
