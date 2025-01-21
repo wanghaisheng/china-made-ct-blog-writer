@@ -13,31 +13,54 @@ from getbrowser import setup_chrome  # Import your setup_chrome
 browser = setup_chrome()
 
 
-def getlinks(k, timeframe='7days', position='all', site='mp.weixin.qq.com'):
+def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',format='all'):
     urls = []
-    baseurl = 'https://www.baidu.com/?tn=68018901_16_pg'
-    search_url = f"https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=baiduadv&wd={urllib.parse.quote(k)}%20site%3A{site}&oq={urllib.parse.quote(k)}%20site%3A{site}&rsv_pq=e88db4ce00cd887e&rsv_t=256b4D2yo2fBNTqKe7E3IhSD4s4sO14u68eLuvCndtsP00QR1%2Br2andmZKJ69F0&rqlang=cn&rsv_enter=1&rsv_dl=tb&gpc=stf%3D1736852798%2C1737457598%7Cstftype%3D1&tfflag=1&si={site}&ct=2097152"
+    baseurl = 'https://www.baidu.com/gaoji/advanced.html'
+    # search_url = f"https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=baiduadv&wd={urllib.parse.quote(k)}%20site%3A{site}&oq={urllib.parse.quote(k)}%20site%3A{site}&rsv_pq=e88db4ce00cd887e&rsv_t=256b4D2yo2fBNTqKe7E3IhSD4s4sO14u68eLuvCndtsP00QR1%2Br2andmZKJ69F0&rqlang=cn&rsv_enter=1&rsv_dl=tb&gpc=stf%3D1736852798%2C1737457598%7Cstftype%3D1&tfflag=1&si={site}&ct=2097152"
     # input
     tab = browser.new_tab()
     tab.get(baseurl)
-    tab.ele('.c-input.adv-q-input.switch-input').clear().input(f'{k} site:{site}')
-    tab.ele('.c-btn.adv-s-btn').click()
+    #输入关键词
+    
+    tab.eles('t:table')[1].ele('t:tbody').children()[1].clear().input(k)
+    setting=tab.eles('t:table')[2].ele('t:tbody').children()
+    # 每页结果数量
+    select=setting[0].ele('t:select')
+    option = select('t:option')
+    if perpageresult not in ["10","20","50"]:
+        perpageresult="50"
+    select.select.by_value(perpageresult)
+    #最近几天的结果
+    select=setting[1].ele('t:select')
+    option = select('t:option')
+    if timeframe not in ['0days',"1days","7days","30days",'360days']:
+        timeframe="0days"
+        
+    select.select.by_value(timeframe.replace('days','').strip())
+    #文档格式	pdf word
+    select=setting[3].ele('t:select')
+    option = select('t:option')
+    if format not in ['all',"pdf","doc","xls",'ppt','rtf']:
+        format="all"
+    select.select.by_value(format)
 
-    if timeframe == 'all':
-        pass
-    elif timeframe == '1days':
-        tab.ele('.c-select-dropdown-list').click()
-        tab.ele('text=最近一天').click()
-    elif timeframe == '7days':
-        tab.ele('.c-select-dropdown-list').click()
-        tab.ele('text=最近7天').click()
-    elif timeframe == '30days':
-        tab.ele('.c-select-dropdown-list').click()
-        tab.ele('text=最近30天').click()
-    elif timeframe == '365days':
-        tab.ele('.c-select-dropdown-list').click()
-        tab.ele('text=最近一年').click()
+    #关键词出现位置
+    checkbox=setting[4].eles('t:input')
+    if position not in ['all',"title","url"]:
+        position="all"
+    if position=='all':
+        checbox[0].click()
+    if position=='title':
+        checbox[1].click()
+    if position=='url':
+        checbox[2].click()
+    # 网站内查询
+    if site:
+        setting[-1].ele('t:input').input(site)
+    
 
+    
+    tab=tab.ele('@value=百度一下').for_new_tab()
     all_items = []
     page_num = 1
     while True:
