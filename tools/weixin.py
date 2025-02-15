@@ -71,7 +71,7 @@ def getlinks(k, timeframe='7days', position='all', site=None,perpageresult='50',
     
 
     print('===',tab.html)
-    tab=tab.ele('@value=百度一下').click()
+    tab.ele('@value=百度一下').click()
     # .for_new_tab()
     print('提交结果 ',tab.url)
     all_items = []
